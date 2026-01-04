@@ -137,13 +137,7 @@ const Login = () => {
                 )}
               </Button>
               <div className="text-(--foreground) text-center text-xs">
-                <p>
-                  By continuing, you acknowledge Anthropic's
-                  <span className="text-blue-500 hover:underline cursor-pointer">
-                    <Link to="/privacypolicy"> Privacy Policy and agree</Link>
-                  </span>
-                </p>
-                <p>to get occasional product update and promotional emails.</p>
+                
 
                 <Link
                   to="/forgot-password"
