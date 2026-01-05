@@ -4,7 +4,7 @@ import { loginSchema } from "@/validation/authSchema";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/redux/features/auth/authSlice";
-import bgImg from "@/assets/images/GrowthIcon.png";
+import bgImg from "@/assets/images/Logo.png";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -20,7 +20,7 @@ const Login = () => {
 
   return (
     <section className="w-full h-screen bg-(--background) flex items-center justify-center">
-      <main className="max-w-2xl w-fit min-w-2xs p-7 rounded bg-(--card) flex items-center justify-center border border-(--border)">
+      <main className="max-w-2xl min-w-75 w-100 p-7 rounded bg-(--card) flex items-center justify-center border border-(--border)">
         <Formik
           initialValues={{
             email: "",
@@ -33,10 +33,10 @@ const Login = () => {
         >
           {({ touched, errors, isSubmitting }) => (
             <Form
-              className="flex flex-col items-center  gap-2"
+              className="flex flex-col items-center  gap-2 w-full"
               aria-label="Login form"
             >
-              <img src={bgImg} alt="logo" className="w-12.5 h-12.5 " />
+              <img src={bgImg} alt="logo" className="h-20 w-20 object-cover" />
               <h2 className="text-3xl text-center font-bold text-(--foreground) dm-sans">
                 Mudaris Academy{" "}
               </h2>
@@ -50,10 +50,11 @@ const Login = () => {
                     name="email"
                     type="email"
                     autoComplete="email"
-                    className={`w-full border p-3 text-(--primary-foreground) bg-(--input) border-(--border) rounded focus:outline-none focus:ring-2 focus:ring-purple transition border-b-2 backdrop-blur-sm ${touched.email && errors.email
-                      ? "border-(--destructive)"
-                      : ""
-                      }`}
+                    className={`w-full border p-3 text-(--primary-foreground) bg-(--input) border-(--border) rounded focus:outline-none focus:ring-2 focus:ring-purple transition border-b-2 backdrop-blur-sm ${
+                      touched.email && errors.email
+                        ? "border-(--destructive)"
+                        : ""
+                    }`}
                     placeholder="Email"
                   />
                   <ErrorMessage
@@ -70,10 +71,11 @@ const Login = () => {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
-                      className={` border p-3 w-full  text-(--primary-foreground) bg-(--input) border-(--border) rounded focus:outline-none focus:ring-2 focus:ring-purple transition border-b-2 backdrop-blur-sm ${touched.password && errors.password
-                        ? "border-(--destructive)"
-                        : ""
-                        }`}
+                      className={` border p-3 w-full  text-(--primary-foreground) bg-(--input) border-(--border) rounded focus:outline-none focus:ring-2 focus:ring-purple transition border-b-2 backdrop-blur-sm ${
+                        touched.password && errors.password
+                          ? "border-(--destructive)"
+                          : ""
+                      }`}
                       placeholder="Password"
                     />
                     <button
@@ -136,15 +138,7 @@ const Login = () => {
                   "Sign in"
                 )}
               </Button>
-              <div className="text-(--foreground) text-center text-xs">
-                <p>
-                  By continuing, you acknowledge Anthropic's
-                  <span className="text-blue-500 hover:underline cursor-pointer">
-                    <Link to="/privacypolicy"> Privacy Policy and agree</Link>
-                  </span>
-                </p>
-                <p>to get occasional product update and promotional emails.</p>
-
+              <div className="text-(--foreground) text-center text-xs ">
                 <Link
                   to="/forgot-password"
                   className="text-sm text-blue-500  font-bold underline"
