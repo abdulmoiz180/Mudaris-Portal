@@ -97,6 +97,9 @@ function VaulDrawer({
                       onClick={() =>
                         handleFunction({
                           id: userId,
+                          full_name: fullName,
+                          avatar_url: avatarUrl,
+                          email: email
                         })
                       }
                     >
@@ -158,7 +161,7 @@ function VaulDrawer({
           )}
         </Drawer.Content>
       </Drawer.Portal>
-    </Drawer.Root>
+    </Drawer.Root >
   );
 }
 export default React.memo(VaulDrawer);

@@ -19,7 +19,13 @@ export const fetchNotifications = createAsyncThunk(
         "channelId",
         "userId",
         token,
-         workspaces:workspaceId(workspace_name)
+         workspaces:workspaceId(workspace_name),
+         profiles:userId (
+               id,
+               full_name,
+               avatar_url,
+               email
+         )
         `)
       .or(`workspaceId.eq.${workspaceId},userId.eq.${userId}`)
       .order("created_at", { ascending: false })

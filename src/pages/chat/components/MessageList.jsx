@@ -13,9 +13,9 @@ const MessageList = ({
   hasMore,
   loadOlder,
   forwardMsg,
+  editMessage
 }) => {
   const { groupId, token } = useParams();
-  // console.log("has more", hasMore);
   return (
     <>
       <PinnedMessages channelId={groupId} token={token} msg={messages} />
@@ -54,6 +54,7 @@ const MessageList = ({
               setPickerOpenFor={setPickerOpenFor}
               onDelete={onDelete}
               forwardMsg={forwardMsg}
+              editMessage={editMessage}
             />
           </div>
         );

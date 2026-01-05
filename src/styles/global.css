@@ -6,6 +6,12 @@
     /* @apply text-black font-normal opacity-50 float-left h-0 pointer-events-none; */
   }
 }
+/* Input / Textarea text selection */
+input::selection,
+textarea::selection {
+  background-color: var(--secondary);
+  color: white;
+}
 
 .profile_active_user::after {
   content: "";

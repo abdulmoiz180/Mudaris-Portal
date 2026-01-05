@@ -4,7 +4,6 @@ const MessageContent = ({ attachments = [], content, id }) => {
   const [previewSrc, setPreviewSrc] = useState(null);
 
   const attachment = attachments[0];
-  console.count("object");
   return (
     <>
       {attachment?.fileType === "video" && (

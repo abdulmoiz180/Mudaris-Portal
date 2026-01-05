@@ -23,6 +23,7 @@ import notificationsReducer from "@/redux/features/notifications/notificationSli
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+
     signupForm: signupFormReducer,
     file: fileSliceReducer,
     notifications: notificationsReducer,
@@ -43,6 +44,8 @@ export const store = configureStore({
     toast: toastReducer,
     markComplete: markCompleteSlice
   },
+  devTools: process.env.NODE_ENV !== "production",
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

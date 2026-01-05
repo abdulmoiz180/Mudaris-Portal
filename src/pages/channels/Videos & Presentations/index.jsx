@@ -93,9 +93,9 @@ const VideosPresentations = () => {
         <div className="flex responsive-video-left-sidebar">
           {/* LEFT SIDEBAR */}
           <div
-            className="mt-4 w-[35%] responsive-video-left-component h-dvh overflow-y-scroll scroll-smooth 
+            className="mt-4 w-[35%] responsive-video-left-component h-[80vh] overflow-y-scroll scroll-smooth 
   [scrollbar-width:auto] 
-  [&::-webkit-scrollbar]:w-2 
+  [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:bg-(--sidebar-primary) 
   [&::-webkit-scrollbar-thumb]:bg-(--sidebar-primary) 
   [&::-webkit-scrollbar-thumb]:rounded-full"

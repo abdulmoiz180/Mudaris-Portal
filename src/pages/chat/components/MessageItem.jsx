@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import MessageActions from "./messageActions/MessageActions.jsx";
 import MessageContent from "./MessageContent.jsx";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { openReplyDrawer } from "@/redux/features/reply/replySlice.js";
 import { DeleteDialog } from "./messageActions/components/DeleteDialog.jsx";
 import {
@@ -11,6 +11,7 @@ import {
 import { ForwardDialog } from "./messageActions/components/ForwardDialog.jsx";
 import { addToast } from "@/redux/features/toast/toastSlice.js";
 import VaulDrawer from "@/components/Drawer/index.jsx";
+import { EditMessageDialog } from "./messageActions/components/EditDialog.jsx";
 
 const MessageItem = ({
   message,
@@ -18,6 +19,7 @@ const MessageItem = ({
   setPickerOpenFor,
   onDelete,
   forwardMsg,
+  editMessage,
   rtl,
 }) => {
   const { created_at, profiles: { id, full_name, avatar_url } = {} } =
@@ -36,7 +38,6 @@ const MessageItem = ({
         duraion: 3000,
       })
     );
-    console.log(__state_local.selectedMessageId);
 
     setTimeout(() => {
       onDelete?.(__state_local.selectedMessageId);
@@ -49,18 +50,22 @@ const MessageItem = ({
   const handleForwardDialog = (messageId) => {
     __dispatch_local({ type: "OPEN_FORWARD_DIALOG", payload: messageId });
   };
-
+  const handleEditDialog = (message) => {
+    __dispatch_local({ type: "OPEN_EDIT_DIALOG", payload: message });
+  };
   const handleConfirmForward = (groups, messageId) => {
     if (!messageId) return;
     __dispatch_local({ type: "SHOW_FORWARD_SUCCESS" });
     window.alert("Message forwarded successfully");
     forwardMsg?.(groups, messageId);
-    console.log(groups);
     setTimeout(() => {
       __dispatch_local({ type: "HIDE_FORWARD_SUCCESS" });
     }, 1200);
   };
-
+  const handleConfirmEdit = (message) => {
+    console.log('edit message ', message)
+    editMessage?.(message)
+  }
   const handleReply = React.useCallback(() => {
     dispatch(openReplyDrawer(message));
   }, [dispatch, message]);
@@ -86,7 +91,17 @@ const MessageItem = ({
             handleConfirmForward(groups, __state_local.selectedMessageId)
           }
         />
-
+        <EditMessageDialog
+          open={__state_local.showEditDialog}
+          onOpenChange={() =>
+            __dispatch_local({ type: "CLOSE_EDIT_DIALOG" })
+          }
+          initialValue={message}
+          onConfirmEdit={handleConfirmEdit}
+        // onConfirmForward={(groups) =>
+        //   handleConfirmForward(groups, __state_local.selectedMessageId)
+        // }
+        />
         <VaulDrawer
           avatarUrl={avatar_url}
           userId={message.profiles.id}
@@ -116,6 +131,7 @@ const MessageItem = ({
               setPickerOpenFor={setPickerOpenFor}
               userId={message.profiles.id}
               handleOpenDeleteDialog={handleOpenDeleteDialog}
+              handleEditDialog={handleEditDialog}
               handleForwardDialog={handleForwardDialog}
             />
           </div>

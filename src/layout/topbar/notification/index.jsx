@@ -6,12 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.jsx";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "@/services/supabaseClient";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   fetchNotifications,
+  prependNotification,
 } from "@/redux/features/notifications/notificationSlice";
 
 export function Notifications() {
@@ -25,7 +26,6 @@ export function Notifications() {
   const { items } = useSelector((state) => state.notifications);
 
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (!userId || !workspace_id) return;
 
@@ -96,10 +96,12 @@ export function Notifications() {
     setUnread(0);
   };
   const handleNavigation = (u) => {
-    console.log(u);
 
     if (u.type === 'directMessage') {
-      if (u.token) navigate(`/workspace/${workspace_id}/individual/${u.token}`)
+      if (u.token) {
+        navigate(`/workspace/${workspace_id}/individual/${u.token}`)
+        // handleFunction(u.profiles)
+      }
     } else if (u.type === 'announcement') {
       navigate(`/workspace/${workspace_id}/announcements`)
     } else if (u.type === 'chapterDb') {

@@ -1,6 +1,6 @@
 /**
  * Local reducer
- * @param {boolean} showDeleteDialog - User input from signup form.
+ * @param {boolean} showDeleteDialog .
  * @param {string} selectedMessageId
  * @param {boolean} showDeleteSuccess
  */
@@ -13,7 +13,8 @@ const initialState = {
   showForwardDialog: false,
   showForwardSuccess: false,
 
-  // deleteError: null, // 🆕
+  showEditDialog: false,
+  showEditSuccess: false,
 };
 
 function __reducer_local(state, action) {
@@ -31,17 +32,6 @@ function __reducer_local(state, action) {
       return { ...state, showDeleteDialog: false, selectedMessageId: null };
     case CASES.HIDE_DELETE_SUCCESS:
       return { ...state, showDeleteSuccess: false };
-    // case CASES.DELETE_FAILED:
-    //   return {
-    //     ...state,
-    //     deleteError: "You cannot delete this message.",
-    //   };
-
-    // case CASES.CLEAR_DELETE_ERROR:
-    //   return {
-    //     ...state,
-    //     deleteError: null,
-    //   };
 
     // --- 🆕 new forward logic ---
     case CASES.OPEN_FORWARD_DIALOG:
@@ -56,7 +46,18 @@ function __reducer_local(state, action) {
       return { ...state, showForwardDialog: false, selectedMessageId: null };
     case CASES.HIDE_FORWARD_SUCCESS:
       return { ...state, showForwardSuccess: false };
-
+    case CASES.OPEN_EDIT_DIALOG:
+      return {
+        ...state,
+        showEditDialog: true,
+        selectedMessage: action.payload,
+      };
+    case CASES.CLOSE_EDIT_DIALOG:
+      return { ...state, showEditDialog: false, selectedMessage: null }
+    case CASES.SHOW_EDIT_SUCCESS:
+      return { ...state, showEditSuccess: true };
+    case CASES.HIDE_EDIT_SUCCESS:
+      return { ...state, showEditSuccess: false };
     default:
       return state;
   }
@@ -75,4 +76,9 @@ const CASES = {
   OPEN_FORWARD_DIALOG: "OPEN_FORWARD_DIALOG",
   CLOSE_FORWARD_DIALOG: "CLOSE_FORWARD_DIALOG",
   HIDE_FORWARD_SUCCESS: "HIDE_FORWARD_SUCCESS",
+  //EDIT DIALOG
+  SHOW_EDIT_SUCCESS: "SHOW_EDIT_SUCCESS",
+  OPEN_EDIT_DIALOG: "OPEN_EDIT_DIALOG",
+  HIDE_EDIT_SUCCESS: "HIDE_EDIT_SUCCESS",
+  CLOSE_EDIT_DIALOG: "CLOSE_EDIT_DIALOG"
 };

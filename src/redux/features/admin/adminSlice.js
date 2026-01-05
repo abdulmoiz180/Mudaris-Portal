@@ -10,7 +10,6 @@ export const fetchAdmins = createAsyncThunk(
         if (cached.length > 0) {
             return cached;
         }
-        console.count("fetchadmins")
         const { data, error } = await supabase
             .from("profiles")
             .select("id, full_name, avatar_url,email")

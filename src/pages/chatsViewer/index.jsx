@@ -23,7 +23,8 @@ const HandleChatsViewer = () => {
         full_name,
         avatar_url
       )
-    `);
+    `).order("created_at", { ascending: false })
+
 
     if (error) {
       console.error("Supabase error:", error);
@@ -38,7 +39,7 @@ const HandleChatsViewer = () => {
   }, []);
 
   return (
-    <div className="bg-(--background) w-full font-bold text-(--primary-foreground) p-4">
+    <div className="bg-(--background) overflow-auto w-full font-bold text-(--primary-foreground) p-4">
       <h1
         className="mb-4 text-3xl
       "
@@ -47,7 +48,7 @@ const HandleChatsViewer = () => {
       </h1>
       {incomingData.length > 0 ? (
         incomingData.map((m, i) => (
-          <div key={i} className="border-b border-(--chart-4)/20 py-2">
+          <div key={i} className="border-b overflow-auto border-(--chart-4)/20 py-2">
             <Link
               to={`/seePersonalChats/${m.token}`}
               className="text-(--secondary-foreground) font-normal"

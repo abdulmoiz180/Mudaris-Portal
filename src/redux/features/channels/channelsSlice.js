@@ -115,7 +115,6 @@ const deleteChannel = createAsyncThunk(
   }
 );
 
-// --- Realtime subscription handler ---
 
 // --- Initial State ---
 const initialState = {

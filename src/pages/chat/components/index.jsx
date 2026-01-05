@@ -20,6 +20,7 @@ const Messages = () => {
     hasMore,
     deleteMessage,
     forwardMsg,
+    editMessage
   } = useMessages();
 
   const { groupId } = useParams();
@@ -76,6 +77,7 @@ const Messages = () => {
         setPickerOpenFor={setPickerOpenFor}
         onDelete={deleteMessage}
         forwardMsg={forwardMsg}
+        editMessage={editMessage}
       />
     </section>
   );

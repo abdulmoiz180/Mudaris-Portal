@@ -134,67 +134,33 @@ export default function useMessages() {
     }, 50);
     loadingRef.current = false;
   }, [page, hasMore]);
-
-  // listen for reaction changes and update the affected message using the latest messages (via ref)
+  //hey i removed the extra code for reactions if you want you can check repo 
+  const userRef = useRef({
+    id: currentUserId,
+    fullName,
+    imageUrl,
+  });
   useEffect(() => {
-    const subscription = supabase
-      .channel("public:message_reactions")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "message_reactions" },
-        async (payload) => {
-          const affectedId = payload.new?.message_id || payload.old?.message_id;
-          if (!affectedId) return;
-          const { data, error } = await supabase
-            .from("messages")
-            .select(
-              `
-                id,
-                content,
-                attachments,
-                created_at,
-                profiles (
-                id,
-                  full_name,
-                  avatar_url
-                ),
-                replies:messages!reply_to(id),
-                reactions:message_reactions (
-                  id,
-                  user_id,
-                  reaction_type
-                )
-              `
-            )
-            .eq("id", affectedId)
-            .single();
-          if (!error && data) {
-            dispatch(
-              setMessages(
-                messagesRef.current.map((msg) =>
-                  msg.id === affectedId
-                    ? { ...msg, reactions: data.reactions || [] }
-                    : msg
-                )
-              )
-            );
-          }
-        }
-      )
-      .subscribe();
-    return () => supabase.removeChannel(subscription);
-  }, []);
-
+    userRef.current = {
+      id: currentUserId,
+      fullName,
+      imageUrl,
+    };
+  }, [currentUserId, fullName, imageUrl])
+  const handleInsertRef = useRef(null)
   useEffect(() => {
-    const handleInsert = async (payload) => {
+    handleInsertRef.current = async (payload) => {
       const newMsg = payload.new;
       let profile = null;
-      if (newMsg.sender_id === currentUserId) {
+      const { id, fullName, imageUrl } = userRef.current;
+
+      if (newMsg.sender_id === id) {
         profile = {
           full_name: fullName,
           avatar_url: imageUrl,
         };
-      } else {
+      }
+      else {
         // ✅ check cache first
         if (profilesCache.current.has(newMsg.sender_id)) {
           profile = profilesCache.current.get(newMsg.sender_id);
@@ -236,8 +202,10 @@ export default function useMessages() {
         }
       }
     };
-
-    const handleDelete = async (payload) => {
+  }, [dispatch])
+  const handleDeleteRef = useRef(null)
+  useEffect(() => {
+    handleDeleteRef.current = async (payload) => {
       const deletedId = payload.old?.id;
       if (!deletedId) return;
       // remove from local state
@@ -245,9 +213,10 @@ export default function useMessages() {
         setMessages(messagesRef.current.filter((m) => m.id !== deletedId))
       );
     };
-
-    const channel = supabase.channel("public:messages");
-
+  }, [dispatch])
+  useEffect(() => {
+    if (!groupId) return
+    const channel = supabase.channel(`messages:${groupId}`);
     channel
       .on(
         "postgres_changes",
@@ -257,7 +226,7 @@ export default function useMessages() {
           table: "messages",
           filter: groupId ? `channel_id=eq.${groupId}` : undefined,
         },
-        handleInsert
+        (payload) => handleInsertRef.current(payload)
       )
       .on(
         "postgres_changes",
@@ -267,14 +236,14 @@ export default function useMessages() {
           table: "messages",
           filter: groupId ? `channel_id=eq.${groupId}` : undefined,
         },
-        handleDelete
+        (payload) => handleDeleteRef.current(payload)
       )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [fullName, imageUrl, currentUserId, groupId]);
+  }, [groupId]);
 
   const forwardMsg = useCallback(
     async (groups, message) => {
@@ -289,11 +258,38 @@ export default function useMessages() {
 
         if (error) console.error("Insert error:", error);
       }
-
-      console.log("forwarded message:", message.content, message.attachments);
     },
     [dispatch]
   );
+  const editMessage = useCallback(
+    async (message) => {
+      const { id, content } = message;
+      const previousMessages = messagesRef.current;
+
+      const updatedMessages = previousMessages.map((m) =>
+        m.id === id
+          ? { ...m, content }
+          : m
+      );
+
+      dispatch(setMessages(updatedMessages));
+
+      // 2️⃣ Update DB (SAFE)
+      const { error } = await supabase
+        .from("messages")
+        .update({ content })
+        .eq("id", id);
+
+      if (error) {
+        console.error("Update error:", error);
+
+        // 3️⃣ Rollback on failure
+        dispatch(setMessages(previousMessages));
+      }
+    },
+    [dispatch]
+  );
+
 
   // delete a message (optimistic)
   const deleteMessage = useCallback(
@@ -325,5 +321,6 @@ export default function useMessages() {
     currentUserId,
     deleteMessage,
     forwardMsg,
+    editMessage
   };
 }
