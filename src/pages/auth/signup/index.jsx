@@ -12,7 +12,7 @@ import { updateField } from "@/redux/features/auth/signupSlice.js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { addToast } from "@/redux/features/toast/toastSlice";
-import bgImg from "@/assets/images/GrowthIcon.png";
+import bgImg from "@/assets/images/Logo.png";
 import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
@@ -128,7 +128,7 @@ const Signup = () => {
     <div className="h-screen bg-(--background) flex items-center justify-center p-6 text-(--foreground)">
       <main className="w-full max-w-md p-8 rounded-xl border border-(--border) bg-(--card) backdrop-blur-xl">
         <div className="flex items-center justify-center w-full">
-          <img src={bgImg} alt="logo" className="w-[50px] h-[50px] " />
+          <img src={bgImg} alt="logo" className="h-20 w-20 object-cover" />
         </div>
 
         <h1 className="text-center text-2xl font-bold bg-linear-to-br from-(--primary) to-(--primary-foreground) bg-clip-text text-transparent">
@@ -245,15 +245,6 @@ const Signup = () => {
                   {" "}
                   Already have account
                 </Link>
-              </div>
-              <div className="text-(--foreground) text-center text-xs">
-                <p>
-                  By continuing, you acknowledge Anthropic's
-                  <span className="text-blue-500 hover:underline cursor-pointer">
-                    <Link to="/privacypolicy"> Privacy Policy and agree</Link>
-                  </span>
-                </p>
-                <p>to get occasional product update and promotional emails.</p>
               </div>
             </Form>
           )}
