@@ -85,7 +85,7 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
           description,
           avatarFile,
           adminId,
-        })
+        }),
       ).unwrap();
 
       // 3️⃣ Reset form & close
@@ -104,12 +104,13 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
       } = await supabase.auth.getSession();
 
       if (error || !session) {
+        console.error(error);
         dispatch(
           addToast({
             message: "You must be logged in to invite users.",
             type: "destructive",
             duration: 3000,
-          })
+          }),
         );
         return;
       }
@@ -124,7 +125,7 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
           description,
           avatarFile,
           adminId,
-        })
+        }),
       ).unwrap();
 
       // // 2. Now send the invitations with the new workspace_id
@@ -141,7 +142,7 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
             emails: users,
             workspaceName: workspace?.workspace_name || "Workspace",
           }),
-        }
+        },
       );
 
       const result = await res.json();
@@ -154,7 +155,7 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
             message: "Server error: " + JSON.stringify(result),
             type: "destructive",
             duration: 3000,
-          })
+          }),
         );
         return;
       }
@@ -168,7 +169,11 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
               failed.map((f) => `${f.email}: ${f.error}`).join("\n"),
             type: "destructive",
             duration: 3000,
-          })
+          }),
+        );
+        console.error(
+          "Some invitations failed:\n" +
+            failed.map((f) => `${f.email}: ${f.error}`).join("\n"),
         );
       } else {
         dispatch(
@@ -176,7 +181,7 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
             message: "All invitations sent successfully!",
             type: "success",
             duration: 3000,
-          })
+          }),
         );
       }
 
@@ -186,18 +191,19 @@ const AddWorkspaceDialog = ({ open, onClose }) => {
           message: "Workspace created successfully!!!",
           type: "success",
           duration: 3000,
-        })
+        }),
       );
       handleClose();
     } catch (err) {
       console.error("⚠️ Unexpected error:", err);
+      console.error(err);
       alert("Unexpected error while sending invitations.");
       dispatch(
         addToast({
           message: "Unexpected error while sending invitations.",
           type: "destructive",
           duration: 3000,
-        })
+        }),
       );
     }
   };
