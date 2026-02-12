@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
 import AddChannelDialog from "@/components/Dialogs/add-channel-dialog";
-import InviteDialog from "@/components/Dialogs/invite-dialog";
 import { SidebarContent } from "@/components/ui/sidebar";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +14,6 @@ import './sidebar.css'
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [addChannelOpen, setAddChannelOpen] = useState(false);
-  const [inviteOpen, setInviteOpen] = useState(false);
   const { workspace_id } = useParams();
 
   const userId = useSelector((state) => state.auth.session?.user?.id);
@@ -23,10 +21,6 @@ const Sidebar = () => {
   // Stable callbacks
   const stableSetAddChannelOpen = useCallback((open) => {
     setAddChannelOpen(open);
-  }, []);
-
-  const stableSetInviteOpen = useCallback((open) => {
-    setInviteOpen(open);
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -46,14 +40,13 @@ const Sidebar = () => {
   }), [workspace_id, userId]);
 
   const sideBarFooterProps = useMemo(() => ({
-    setInviteOpen: stableSetInviteOpen,
     handleLogout
-  }), [stableSetInviteOpen, handleLogout]);
+  }), [handleLogout]);
 
   const sideBarHeaderProps = useMemo(() => ({
     userId
   }), [userId]);
-console.count("sidebarrendering")
+
   return (
     <>
       <AddChannelDialog
@@ -61,7 +54,6 @@ console.count("sidebarrendering")
         onOpenChange={stableSetAddChannelOpen}
         usedIn={"createChannel"}
       />
-      <InviteDialog open={inviteOpen} onOpenChange={stableSetInviteOpen} />
       <SidebarContent className="sideBar h-full bg-(--sidebar) text-(--foreground) border-2 border-(--sidebar-border) px-2 py-4 flex flex-col gap-4">
         <SideBarHeader {...sideBarHeaderProps} />
         <div className="flex flex-col gap-2 border-y-2 w-full border-(--sidebar-border)">

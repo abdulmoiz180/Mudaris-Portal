@@ -20,6 +20,7 @@ import Terms from "@/pages/terms/index.jsx";
 import ForgotPassword from "@/pages/auth/forgotpassword/index.jsx";
 import ResetPassword from "@/pages/auth/forgotpassword/ResetPassword.jsx";
 import ErrorPage from "@/pages/errorPage/index.jsx";
+import InviteUsersPage from "@/pages/invite/index.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -140,6 +141,15 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [{ path: "", element: <Market /> }],
+      },
+      {
+        path: "/workspace/:workspace_id/invite",
+        element: (
+          <PrivateRoute>
+            <TopbarOnly />
+          </PrivateRoute>
+        ),
+        children: [{ path: "", element: <InviteUsersPage /> }],
       },
       {
         path: "/workspace/:workspace_id",
