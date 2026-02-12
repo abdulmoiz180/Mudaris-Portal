@@ -71,3 +71,6 @@
     width: 100%;
   }
 }
+.messages-container hr{
+border: none;
+}

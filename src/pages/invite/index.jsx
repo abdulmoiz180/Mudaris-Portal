@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { fetchWorkspaceMembers, selectWorkspaceMembers } from "@/redux/features/
 import { addToast } from "@/redux/features/toast/toastSlice";
 import { supabase } from "@/services/supabaseClient";
 import { ArrowLeft, Mail, Upload, Hash, Search } from "lucide-react";
+import { useIsAdmin } from "@/constants/constants.js";
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,6 +27,12 @@ const InviteUsersPage = () => {
   const { workspace_id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isAdmin = useIsAdmin();
+
+  // Block non-admin users from accessing this page
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
   const [emailText, setEmailText] = useState("");
   const [csvFile, setCsvFile] = useState(null);
@@ -117,8 +124,9 @@ const InviteUsersPage = () => {
 
   const handleSendInvitations = async () => {
     setError("");
-    const textEmails = parseEmails(emailText);
-    const allEmails = [...new Set([...textEmails, ...csvEmails])];
+    const textEmails = parseEmails(emailText).map((e) => e.toLowerCase());
+    const normalizedCsvEmails = csvEmails.map((e) => e.toLowerCase());
+    const allEmails = [...new Set([...textEmails, ...normalizedCsvEmails])];
 
     if (allEmails.length === 0) {
       setError("Please enter at least one email address.");
