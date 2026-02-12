@@ -1,31 +1,15 @@
-@media only screen and (max-width: 600px) {
-  .responsive_createws_button {
-    height: 30px;
-    padding: 8px;
-  }
+/* Dashboard responsive styles */
+
+/* Mobile */
+@media only screen and (max-width: 640px) {
   .responisve_dashboard_title {
-    font-size: 22px;
-    width: 100%;
-  }
-  .responsive_ws_card_desc {
-    color: rgb(192, 192, 192);
-    font-size: 12px;
-  }
-  .responsive_ws_launch_btn {
-    width: 100%;
-  }
-  .responsive_create_p {
-    font-size: 14px;
-  }
-  .responsive_footer {
-    font-size: 12px;
+    font-size: 20px;
   }
 }
-@media only screen and (min-width: 600px) and (max-width: 768px) {
-  .responsive_create_p {
-    font-size: 18px;
-  }
-  .responsive_footer {
-    font-size: 14px;
+
+/* Tablet */
+@media only screen and (min-width: 641px) and (max-width: 1024px) {
+  .responisve_dashboard_title {
+    font-size: 24px;
   }
 }
