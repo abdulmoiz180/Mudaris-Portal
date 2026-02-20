@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchWorkspaceById } from "@/redux/features/workspace/workspaceSlice";
 import { fetchChannels } from "@/redux/features/channels/channelsSlice.js";
-import { fetchWorkspaceMembers, selectWorkspaceMembers } from "@/redux/features/workspaceMembers/WorkspaceMembersSlice";
+import {
+  fetchWorkspaceMembers,
+  selectWorkspaceMembers,
+} from "@/redux/features/workspaceMembers/WorkspaceMembersSlice";
 import { addToast } from "@/redux/features/toast/toastSlice";
 import { supabase } from "@/services/supabaseClient";
 import { ArrowLeft, Mail, Upload, Hash, Search } from "lucide-react";
@@ -24,15 +27,10 @@ function parseEmails(text) {
 }
 
 const InviteUsersPage = () => {
+  const isAdmin = useIsAdmin();
   const { workspace_id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isAdmin = useIsAdmin();
-
-  // Block non-admin users from accessing this page
-  if (!isAdmin) {
-    return <Navigate to="/" replace />;
-  }
 
   const [emailText, setEmailText] = useState("");
   const [csvFile, setCsvFile] = useState(null);
@@ -47,7 +45,9 @@ const InviteUsersPage = () => {
   const fileInputRef = useRef(null);
 
   // Redux state
-  const { currentWorkspace, loading } = useSelector((state) => state.workSpaces);
+  const { currentWorkspace, loading } = useSelector(
+    (state) => state.workSpaces,
+  );
   const channelState = useSelector((state) => state.channels);
   const isChannelsLoaded = channelState.allIds.length > 0;
   const currentUserEmail = useSelector((state) => state.auth.user?.email);
@@ -91,10 +91,15 @@ const InviteUsersPage = () => {
   const filteredChannels = useMemo(
     () =>
       privateChannels.filter((c) =>
-        c.name?.toLowerCase().includes(channelSearch.toLowerCase())
+        c.name?.toLowerCase().includes(channelSearch.toLowerCase()),
       ),
-    [privateChannels, channelSearch]
+    [privateChannels, channelSearch],
   );
+
+  // Block non-admin users from accessing this page
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
   // CSV file handler
   const handleCsvUpload = (e) => {
@@ -107,7 +112,12 @@ const InviteUsersPage = () => {
       const text = event.target.result;
       const lines = text.split(/\r?\n/).filter(Boolean);
       const emails = lines
-        .map((line) => line.split(",")[0]?.trim().replace(/^["']|["']$/g, ""))
+        .map((line) =>
+          line
+            .split(",")[0]
+            ?.trim()
+            .replace(/^["']|["']$/g, ""),
+        )
         .filter((email) => isValidEmail(email));
       setCsvEmails(emails);
     };
@@ -118,7 +128,7 @@ const InviteUsersPage = () => {
     setSelectedChannels((prev) =>
       prev.includes(channelId)
         ? prev.filter((id) => id !== channelId)
-        : [...prev, channelId]
+        : [...prev, channelId],
     );
   };
 
@@ -146,8 +156,8 @@ const InviteUsersPage = () => {
 
     const alreadyMember = workspaceMembers.some((m) =>
       allEmails.some(
-        (e) => m.user_profiles?.email?.toLowerCase() === e.toLowerCase()
-      )
+        (e) => m.user_profiles?.email?.toLowerCase() === e.toLowerCase(),
+      ),
     );
     if (alreadyMember) {
       setError("One or more of these users are already members.");
@@ -167,7 +177,7 @@ const InviteUsersPage = () => {
             message: "You must be logged in to invite users.",
             type: "destructive",
             duration: 3000,
-          })
+          }),
         );
         setSending(false);
         return;
@@ -187,7 +197,7 @@ const InviteUsersPage = () => {
             workspaceName: currentWorkspace?.workspace_name || "Workspace",
             channels: selectedChannels,
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -197,7 +207,7 @@ const InviteUsersPage = () => {
             message: "Server error: " + JSON.stringify(data),
             type: "destructive",
             duration: 3000,
-          })
+          }),
         );
         setSending(false);
         return;
@@ -212,7 +222,7 @@ const InviteUsersPage = () => {
               failed.map((f) => `${f.email}: ${f.error}`).join("\n"),
             type: "destructive",
             duration: 3000,
-          })
+          }),
         );
       } else {
         dispatch(
@@ -220,7 +230,7 @@ const InviteUsersPage = () => {
             message: "All invitations sent successfully!",
             type: "success",
             duration: 3000,
-          })
+          }),
         );
       }
       navigate(-1);
@@ -231,7 +241,7 @@ const InviteUsersPage = () => {
           message: "Unexpected error while sending invitations.",
           type: "destructive",
           duration: 3000,
-        })
+        }),
       );
     }
     setSending(false);
