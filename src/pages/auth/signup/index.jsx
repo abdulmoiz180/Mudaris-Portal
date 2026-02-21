@@ -77,7 +77,7 @@ const Signup = () => {
       const { data, error } = await supabase.functions.invoke("signup-user", {
         body: {
           fullName: values.fullName,
-          email: invite.email,
+          email: invite.email || values.email,
           password: values.password,
           token,
           workspaceId: invite.workspace_id,
@@ -88,13 +88,13 @@ const Signup = () => {
 
       if (error) {
         dispatch(
-          addToast({ message: "Signup failed. Try again.", type: "error" })
+          addToast({ message: "Signup failed. Try again.", type: "error" }),
         );
         return;
       }
 
       const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: invite.email,
+        email: invite.email || values.email,
         password: values.password,
       });
 
@@ -229,7 +229,7 @@ const Signup = () => {
               {/* Submit */}
               <Button
                 type="submit"
-                className={"w-full h-[45px]"}
+                className={"w-full h-11.5"}
                 variant="success"
               >
                 Create Account
