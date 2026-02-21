@@ -14,6 +14,7 @@ import { addToast } from "@/redux/features/toast/toastSlice";
 import { supabase } from "@/services/supabaseClient";
 import { ArrowLeft, Mail, Upload, Hash, Search } from "lucide-react";
 import { useIsAdmin } from "@/constants/constants.js";
+import PublicInviteLink from "./PublicInviteLink";
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -420,6 +421,18 @@ const InviteUsersPage = () => {
             </Button>
           </div>
         </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-(--border)" />
+          <span className="text-xs text-(--muted-foreground) font-medium uppercase">
+            Or
+          </span>
+          <div className="flex-1 h-px bg-(--border)" />
+        </div>
+
+        {/* Public Invite Link */}
+        <PublicInviteLink workspaceId={workspace_id} />
       </div>
     </div>
   );
